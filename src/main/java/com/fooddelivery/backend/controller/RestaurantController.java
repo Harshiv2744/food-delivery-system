@@ -1,34 +1,34 @@
 package com.fooddelivery.backend.controller;
 
+import com.fooddelivery.backend.dto.CreateRestaurantRequest;
 import com.fooddelivery.backend.model.RestaurantProfile;
 import com.fooddelivery.backend.service.RestaurantService;
-import lombok.RequiredArgsConstructor;
+import jakarta.validation.Valid;   
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/restaurants")
-@RequiredArgsConstructor
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
 
+    public RestaurantController(RestaurantService restaurantService) {
+        this.restaurantService = restaurantService;
+    }
+
     @PostMapping
-    public RestaurantProfile createRestaurant(@RequestBody RestaurantProfile restaurant) {
-        restaurant.setCreatedAt(LocalDateTime.now());
+    public RestaurantProfile createRestaurant(
+            @Valid @RequestBody CreateRestaurantRequest request) {
+
+        RestaurantProfile restaurant = RestaurantProfile.builder()
+                .restaurantName(request.getRestaurantName())
+                .address(request.getAddress())
+                .phone(request.getPhone())
+                .isOpen(request.getIsOpen())
+                .createdAt(LocalDateTime.now())
+                .build();
+
         return restaurantService.createRestaurant(restaurant);
     }
-
-    @GetMapping
-    public List<RestaurantProfile> getAllRestaurants() {
-        return restaurantService.getAllRestaurants();
-    }
-
-    @GetMapping("/{id}")
-    public RestaurantProfile getRestaurantById(@PathVariable Long id) {
-        return restaurantService.getRestaurantById(id);
-    }
 }
-
