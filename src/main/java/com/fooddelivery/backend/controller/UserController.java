@@ -1,13 +1,13 @@
 package com.fooddelivery.backend.controller;
 
 import com.fooddelivery.backend.dto.CreateUserRequest;
-import com.fooddelivery.backend.model.User;
+import com.fooddelivery.backend.dto.UserResponse;
 import com.fooddelivery.backend.service.UserService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -17,28 +17,23 @@ public class UserController {
 
     private final UserService userService;
 
+    // CREATE USER
     @PostMapping
-public User createUser(@Valid @RequestBody CreateUserRequest request) {
+    public ResponseEntity<UserResponse> createUser(
+            @Valid @RequestBody CreateUserRequest request) {
 
-    User user = User.builder()
-            .name(request.getName())
-            .email(request.getEmail())
-            .password(request.getPassword())
-            .role(request.getRole())
-            .createdAt(LocalDateTime.now())
-            .build();
-
-    return userService.createUser(user);
-}
-
-
-    @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+        return ResponseEntity.ok(userService.createUser(request));
     }
 
+    // GET ALL USERS
+    @GetMapping
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    // GET USER BY ID
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
+    public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getUserById(id));
     }
 }
