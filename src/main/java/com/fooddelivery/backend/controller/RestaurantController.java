@@ -4,6 +4,7 @@ import com.fooddelivery.backend.model.Restaurant;
 import com.fooddelivery.backend.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -15,9 +16,10 @@ public class RestaurantController {
     private final RestaurantRepository restaurantRepository;
 
     @PostMapping
-    public Restaurant createRestaurant(@RequestBody Restaurant restaurant) {
-        return restaurantRepository.save(restaurant);
-    }
+@PreAuthorize("hasRole('ADMIN')")
+public Restaurant createRestaurant(@RequestBody Restaurant restaurant) {
+    return restaurantRepository.save(restaurant);
+}
 
     @GetMapping
     public List<Restaurant> getAllRestaurants() {

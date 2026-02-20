@@ -49,11 +49,12 @@ public class UserService {
 
     // 🔥 MAPPING METHOD (VERY IMPORTANT)
     private UserResponse mapToResponse(User user) {
-        return UserResponse.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .email(user.getEmail())
-                .role(user.getRole())
-                .build();
-    }
+    return UserResponse.builder()
+            .id(user.getId())
+            .name(user.getName())
+            .email(user.getEmail())
+            .role(user.getRole().name())
+            .createdAt(user.getCreatedAt())
+            .build();
+        }
 }
