@@ -22,7 +22,7 @@ public class OrderService {
     private final UserRepository userRepository;
     private final RestaurantRepository restaurantRepository;
 
-    // ✅ Map Entity → DTO
+    // Map Entity → DTO
     private OrderResponse mapToResponse(Order order) {
         return OrderResponse.builder()
                 .id(order.getId())
@@ -34,7 +34,7 @@ public class OrderService {
                 .build();
     }
 
-    // ✅ Create Order
+    // Create Order
     public OrderResponse createOrder(Double totalAmount, Long userId, Long restaurantId) {
 
         User user = userRepository.findById(userId)
@@ -56,7 +56,6 @@ public class OrderService {
         return mapToResponse(saved);
     }
 
-    // ✅ Get All Orders
     public List<OrderResponse> getAllOrders() {
         return orderRepository.findAll()
                 .stream()
@@ -64,7 +63,7 @@ public class OrderService {
                 .toList();
     }
 
-    // ✅ Get Order By ID
+    // Get Order By Id
     public OrderResponse getOrderById(Long id) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
