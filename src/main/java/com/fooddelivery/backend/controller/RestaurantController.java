@@ -15,17 +15,20 @@ public class RestaurantController {
 
     private final RestaurantRepository restaurantRepository;
 
+    // ✅ Create Restaurant
     @PostMapping
 @PreAuthorize("hasRole('ADMIN')")
 public Restaurant createRestaurant(@RequestBody Restaurant restaurant) {
     return restaurantRepository.save(restaurant);
 }
 
+    // ✅ Get All Restaurants
     @GetMapping
     public List<Restaurant> getAllRestaurants() {
         return restaurantRepository.findAll();
     }
 
+    // ✅ Get Restaurant By Id
     @GetMapping("/{id}")
     public Restaurant getRestaurantById(@PathVariable Long id) {
         return restaurantRepository.findById(id)

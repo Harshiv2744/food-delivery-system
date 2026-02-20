@@ -3,6 +3,7 @@ package com.fooddelivery.backend.model;
 import com.fooddelivery.backend.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -25,12 +26,12 @@ public class Order {
 
     private LocalDateTime createdAt;
 
-    // 🔥 Relationship with User
+    // Relationship with User
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    // 🔥 Relationship with Restaurant
+    // Relationship with Restaurant
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
