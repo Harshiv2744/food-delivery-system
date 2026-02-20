@@ -14,28 +14,22 @@ public class RestaurantController {
 
     private final RestaurantRepository restaurantRepository;
 
-<<<<<<< HEAD
-=======
+    // ✅ Create Restaurant
     @PostMapping
     public Restaurant createRestaurant(@RequestBody Restaurant restaurant) {
         return restaurantRepository.save(restaurant);
     }
 
->>>>>>> f5b49cb0862004dca76b729cf222dfe59f7d6ae0
+    // ✅ Get All Restaurants
     @GetMapping
     public List<Restaurant> getAllRestaurants() {
         return restaurantRepository.findAll();
     }
 
-<<<<<<< HEAD
-    @PostMapping
-    public Restaurant createRestaurant(@RequestBody Restaurant restaurant) {
-        return restaurantRepository.save(restaurant);
-=======
+    // ✅ Get Restaurant By Id
     @GetMapping("/{id}")
     public Restaurant getRestaurantById(@PathVariable Long id) {
         return restaurantRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Restaurant not found"));
->>>>>>> f5b49cb0862004dca76b729cf222dfe59f7d6ae0
     }
 }
