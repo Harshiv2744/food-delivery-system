@@ -1,9 +1,10 @@
 package com.fooddelivery.backend.controller;
 
 import com.fooddelivery.backend.dto.CreateOrderRequest;
-import com.fooddelivery.backend.model.Order;
+import com.fooddelivery.backend.dto.OrderResponse;
 import com.fooddelivery.backend.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -17,21 +18,25 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public Order createOrder(@Valid @RequestBody CreateOrderRequest request) {
-        return orderService.createOrder(
-                request.getTotalAmount(),
-                request.getUserId(),
-                request.getRestaurantId()
+    public ResponseEntity<OrderResponse> createOrder(
+            @Valid @RequestBody CreateOrderRequest request) {
+
+        return ResponseEntity.ok(
+                orderService.createOrder(
+                        request.getTotalAmount(),
+                        request.getUserId(),
+                        request.getRestaurantId()
+                )
         );
     }
 
     @GetMapping
-    public List<Order> getAllOrders() {
-        return orderService.getAllOrders();
+    public ResponseEntity<List<OrderResponse>> getAllOrders() {
+        return ResponseEntity.ok(orderService.getAllOrders());
     }
 
     @GetMapping("/{id}")
-    public Order getOrderById(@PathVariable Long id) {
-        return orderService.getOrderById(id);
+    public ResponseEntity<OrderResponse> getOrderById(@PathVariable Long id) {
+        return ResponseEntity.ok(orderService.getOrderById(id));
     }
 }

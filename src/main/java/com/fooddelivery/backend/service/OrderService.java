@@ -1,5 +1,6 @@
 package com.fooddelivery.backend.service;
 
+import com.fooddelivery.backend.dto.OrderResponse;
 import com.fooddelivery.backend.enums.OrderStatus;
 import com.fooddelivery.backend.model.Order;
 import com.fooddelivery.backend.model.User;
@@ -21,7 +22,20 @@ public class OrderService {
     private final UserRepository userRepository;
     private final RestaurantRepository restaurantRepository;
 
-    public Order createOrder(Double totalAmount, Long userId, Long restaurantId) {
+    // 🔹 Mapping Method (Very Important)
+    private OrderResponse mapToResponse(Order order) {
+        return OrderResponse.builder()
+                .id(order.getId())
+                .totalAmount(order.getTotalAmount())
+                .status(order.getStatus())
+                .createdAt(order.getCreatedAt())
+                .userId(order.getUser().getId())
+                .restaurantId(order.getRestaurant().getId())
+                .build();
+    }
+
+    // 🔹 Create Order
+    public OrderResponse createOrder(Double totalAmount, Long userId, Long restaurantId) {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -37,15 +51,24 @@ public class OrderService {
                 .restaurant(restaurant)
                 .build();
 
-        return orderRepository.save(order);
+        Order saved = orderRepository.save(order);
+
+        return mapToResponse(saved);
     }
 
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();
+    // 🔹 Get All Orders
+    public List<OrderResponse> getAllOrders() {
+        return orderRepository.findAll()
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
     }
 
-    public Order getOrderById(Long id) {
-        return orderRepository.findById(id)
+    // 🔹 Get Order By Id
+    public OrderResponse getOrderById(Long id) {
+        Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        return mapToResponse(order);
     }
 }
