@@ -9,7 +9,11 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+<<<<<<< HEAD
 import org.springframework.security.access.prepost.PreAuthorize;
+=======
+import org.springframework.http.HttpStatus;
+>>>>>>> dfc5c9c (Day 6 - completed)
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -28,11 +32,21 @@ public class OrderController {
     public ResponseEntity<OrderResponse> createOrder(
             @Valid @RequestBody CreateOrderRequest request) {
 
+<<<<<<< HEAD
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(orderService.createOrder(
                         request.getTotalAmount(),
                         request.getRestaurantId()
                 ));
+=======
+        OrderResponse response = orderService.createOrder(
+                request.getTotalAmount(),
+                request.getUserId(),
+                request.getRestaurantId()
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+>>>>>>> dfc5c9c (Day 6 - completed)
     }
 
     // 🔐 USER & ADMIN can view orders (filtered in service)
