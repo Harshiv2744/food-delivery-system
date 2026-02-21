@@ -2,8 +2,11 @@ package com.fooddelivery.backend.controller;
 
 import com.fooddelivery.backend.dto.CreateOrderRequest;
 import com.fooddelivery.backend.dto.OrderResponse;
+import com.fooddelivery.backend.enums.OrderStatus;   // ✅ IMPORTANT IMPORT
 import com.fooddelivery.backend.service.OrderService;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,16 +28,14 @@ public class OrderController {
     public ResponseEntity<OrderResponse> createOrder(
             @Valid @RequestBody CreateOrderRequest request) {
 
-        OrderResponse response = orderService.createOrder(
-                request.getTotalAmount(),
-                request.getUserId(),
-                request.getRestaurantId()
-        );
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(orderService.createOrder(
+                        request.getTotalAmount(),
+                        request.getRestaurantId()
+                ));
     }
 
-    // 🔐 USER & ADMIN can view all orders
+    // 🔐 USER & ADMIN can view orders (filtered in service)
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @GetMapping
     public ResponseEntity<List<OrderResponse>> getAllOrders() {
@@ -46,5 +47,17 @@ public class OrderController {
     @GetMapping("/{id}")
     public ResponseEntity<OrderResponse> getOrderById(@PathVariable Long id) {
         return ResponseEntity.ok(orderService.getOrderById(id));
+    }
+
+    // 🔐 ADMIN can update order status
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}/status")
+    public ResponseEntity<OrderResponse> updateStatus(
+            @PathVariable Long id,
+            @RequestParam OrderStatus status) {
+
+        return ResponseEntity.ok(
+                orderService.updateOrderStatus(id, status)
+        );
     }
 }

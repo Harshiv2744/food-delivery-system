@@ -2,6 +2,7 @@ package com.fooddelivery.backend.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -10,8 +11,11 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private final String SECRET = "mysecretkeymysecretkeymysecretkey12345";
-    private final long EXPIRATION = 1000 * 60 * 60; // 1 hour
+    @Value("${jwt.secret}")
+    private String SECRET;
+
+    @Value("${jwt.expiration}")
+    private long EXPIRATION;
 
     private Key getSignKey() {
         return Keys.hmacShaKeyFor(SECRET.getBytes());
