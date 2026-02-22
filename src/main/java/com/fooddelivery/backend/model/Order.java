@@ -1,6 +1,5 @@
 package com.fooddelivery.backend.model;
 
-import com.fooddelivery.backend.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 

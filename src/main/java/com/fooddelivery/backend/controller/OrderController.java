@@ -1,18 +1,17 @@
 package com.fooddelivery.backend.controller;
 
-import com.fooddelivery.backend.dto.CreateOrderRequest;
+import com.fooddelivery.backend.model.OrderStatus;
 import com.fooddelivery.backend.dto.OrderResponse;
-import com.fooddelivery.backend.enums.OrderStatus;
+import com.fooddelivery.backend.model.OrderStatus;
 import com.fooddelivery.backend.service.OrderService;
-
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,43 +21,29 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    // ✅ USER can create order
-    @PreAuthorize("hasRole('USER')")
-    @PostMapping
-    public ResponseEntity<OrderResponse> createOrder(
-            @Valid @RequestBody CreateOrderRequest request) {
-
-        OrderResponse response = orderService.createOrder(
-                request.getTotalAmount(),
-                request.getRestaurantId()
-        );
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
-
-    // ✅ USER & ADMIN can view orders
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    @GetMapping
-    public ResponseEntity<List<OrderResponse>> getAllOrders() {
-        return ResponseEntity.ok(orderService.getAllOrders());
-    }
-
-    // ✅ USER & ADMIN can view single order
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    @GetMapping("/{id}")
-    public ResponseEntity<OrderResponse> getOrderById(@PathVariable Long id) {
-        return ResponseEntity.ok(orderService.getOrderById(id));
-    }
-
-    // 🔥 PART 5 – Only ADMIN can update status
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/{id}/status")
-    public ResponseEntity<OrderResponse> updateStatus(
-            @PathVariable Long id,
-            @RequestParam OrderStatus status) {
+    @GetMapping
+    public ResponseEntity<Page<OrderResponse>> getAllOrders(Pageable pageable) {
+        return ResponseEntity.ok(orderService.getAllOrders(pageable));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/filter")
+    public ResponseEntity<Page<OrderResponse>> filterByStatus(
+            @RequestParam OrderStatus status,
+            Pageable pageable) {
 
         return ResponseEntity.ok(
-                orderService.updateOrderStatus(id, status)
+                orderService.getOrdersByStatus(status, pageable)
         );
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/my-orders")
+    public ResponseEntity<List<OrderResponse>> getMyOrders(Authentication authentication) {
+
+        String email = authentication.getName();
+
+        return ResponseEntity.ok(orderService.getMyOrders(email));
     }
 }

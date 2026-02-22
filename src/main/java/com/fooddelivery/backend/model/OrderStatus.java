@@ -1,5 +1,5 @@
-package com.fooddelivery.backend.enums;
-
+package com.fooddelivery.backend.model;
+import com.fooddelivery.backend.model.OrderStatus;
 public enum OrderStatus {
     PENDING,
     CONFIRMED,

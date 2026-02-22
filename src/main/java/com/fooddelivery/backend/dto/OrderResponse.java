@@ -1,20 +1,24 @@
 package com.fooddelivery.backend.dto;
 
-import com.fooddelivery.backend.enums.OrderStatus;
-import lombok.Builder;
-import lombok.Getter;
+import com.fooddelivery.backend.model.OrderStatus;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderResponse {
 
     private Long id;
-    private Double totalAmount;
+
+    private Double total;
+
     private OrderStatus status;
+
     private LocalDateTime createdAt;
 
-    private Long userId;
-    private Long restaurantId;
+    private String userEmail;
 }
