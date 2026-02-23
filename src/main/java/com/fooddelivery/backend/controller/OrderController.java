@@ -31,7 +31,6 @@ public class OrderController {
     public ResponseEntity<Page<OrderResponse>> filterByStatus(
             @RequestParam OrderStatus status,
             Pageable pageable) {
-
         return ResponseEntity.ok(orderService.getOrdersByStatus(status, pageable));
     }
 
@@ -42,17 +41,36 @@ public class OrderController {
     }
 
     @PreAuthorize("hasRole('CUSTOMER')")
+    @PostMapping("/place")
+    public ResponseEntity<OrderResponse> placeOrder(
+            Authentication authentication,
+            @RequestParam Long restaurantId) {
+        return ResponseEntity.ok(orderService.placeOrderFromCart(authentication.getName(), restaurantId));
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CUSTOMER') or hasRole('RESTAURANT') or hasRole('DELIVERY_AGENT')")
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderResponse> getOrderById(@PathVariable Long id) {
+        return ResponseEntity.ok(orderService.getOrderById(id));
+    }
+
+    @PreAuthorize("hasRole('RESTAURANT')")
+    @GetMapping("/restaurant/{restaurantId}")
+    public ResponseEntity<List<OrderResponse>> getOrdersByRestaurant(@PathVariable Long restaurantId) {
+        return ResponseEntity.ok(orderService.getOrdersByRestaurantId(restaurantId));
+    }
+
+    @PreAuthorize("hasRole('CUSTOMER')")
     @PutMapping("/{id}/pay")
     public ResponseEntity<OrderResponse> pay(@PathVariable Long id) {
         return ResponseEntity.ok(orderService.processPayment(id));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('RESTAURANT')")
     @PutMapping("/{id}/status")
     public ResponseEntity<OrderResponse> updateStatus(
             @PathVariable Long id,
             @RequestParam OrderStatus status) {
-
         return ResponseEntity.ok(orderService.updateOrderStatus(id, status));
     }
 }

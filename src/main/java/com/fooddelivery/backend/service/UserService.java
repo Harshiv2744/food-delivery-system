@@ -1,7 +1,9 @@
 package com.fooddelivery.backend.service;
 
 import com.fooddelivery.backend.dto.CreateUserRequest;
+import com.fooddelivery.backend.dto.UpdateProfileRequest;
 import com.fooddelivery.backend.dto.UserResponse;
+import com.fooddelivery.backend.exception.ResourceNotFoundException;
 import com.fooddelivery.backend.model.User;
 import com.fooddelivery.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -48,9 +50,21 @@ public class UserService {
     // GET USER BY ID
     public UserResponse getUserById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
         return mapToResponse(user);
+    }
+
+    public UserResponse getProfileByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return mapToResponse(user);
+    }
+
+    public UserResponse updateProfile(String email, UpdateProfileRequest request) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        user.setName(request.getName());
+        return mapToResponse(userRepository.save(user));
     }
 
     // 🔥 MAPPING METHOD (VERY IMPORTANT)

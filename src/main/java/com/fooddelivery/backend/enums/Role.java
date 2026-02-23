@@ -1,8 +1,8 @@
 package com.fooddelivery.backend.enums;
 
 public enum Role {
-    USER,
+    ADMIN,
+    CUSTOMER,
     RESTAURANT,
-    DELIVERY,
-    ADMIN
+    DELIVERY_AGENT
 }
