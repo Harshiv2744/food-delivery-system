@@ -35,13 +35,13 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getOrdersByStatus(status, pageable));
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('CUSTOMER')")
     @GetMapping("/my-orders")
     public ResponseEntity<List<OrderResponse>> getMyOrders(Authentication authentication) {
         return ResponseEntity.ok(orderService.getMyOrders(authentication.getName()));
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('CUSTOMER')")
     @PutMapping("/{id}/pay")
     public ResponseEntity<OrderResponse> pay(@PathVariable Long id) {
         return ResponseEntity.ok(orderService.processPayment(id));
