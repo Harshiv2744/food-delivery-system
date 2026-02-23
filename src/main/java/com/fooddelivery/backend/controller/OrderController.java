@@ -1,8 +1,7 @@
 package com.fooddelivery.backend.controller;
 
-import com.fooddelivery.backend.model.OrderStatus;
 import com.fooddelivery.backend.dto.OrderResponse;
-import com.fooddelivery.backend.model.OrderStatus;
+import com.fooddelivery.backend.enums.OrderStatus;
 import com.fooddelivery.backend.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,17 +32,27 @@ public class OrderController {
             @RequestParam OrderStatus status,
             Pageable pageable) {
 
-        return ResponseEntity.ok(
-                orderService.getOrdersByStatus(status, pageable)
-        );
+        return ResponseEntity.ok(orderService.getOrdersByStatus(status, pageable));
     }
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/my-orders")
     public ResponseEntity<List<OrderResponse>> getMyOrders(Authentication authentication) {
+        return ResponseEntity.ok(orderService.getMyOrders(authentication.getName()));
+    }
 
-        String email = authentication.getName();
+    @PreAuthorize("hasRole('USER')")
+    @PutMapping("/{id}/pay")
+    public ResponseEntity<OrderResponse> pay(@PathVariable Long id) {
+        return ResponseEntity.ok(orderService.processPayment(id));
+    }
 
-        return ResponseEntity.ok(orderService.getMyOrders(email));
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}/status")
+    public ResponseEntity<OrderResponse> updateStatus(
+            @PathVariable Long id,
+            @RequestParam OrderStatus status) {
+
+        return ResponseEntity.ok(orderService.updateOrderStatus(id, status));
     }
 }

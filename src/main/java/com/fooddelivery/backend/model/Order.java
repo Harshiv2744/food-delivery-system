@@ -1,17 +1,20 @@
 package com.fooddelivery.backend.model;
 
+import com.fooddelivery.backend.enums.OrderStatus;
+import com.fooddelivery.backend.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
-@Table(name = "orders")
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@Table(name = "orders")
 public class Order {
 
     @Id
@@ -21,29 +24,19 @@ public class Order {
     private Double totalAmount;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+    private OrderStatus orderStatus;
+
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus;
 
     private LocalDateTime createdAt;
 
-    private LocalDateTime updatedAt;
-
-    // Relationship with User
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    // Relationship with Restaurant
     @ManyToOne
-    @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderItem> items;
 }
