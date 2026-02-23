@@ -1,9 +1,12 @@
 package com.fooddelivery.backend.repository;
 
+import com.fooddelivery.backend.enums.RestaurantStatus;
 import com.fooddelivery.backend.model.Restaurant;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-@Repository
+import java.util.List;
+
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
+
+    List<Restaurant> findByStatus(RestaurantStatus status);
 }
