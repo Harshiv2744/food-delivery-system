@@ -2,6 +2,7 @@ package com.fooddelivery.backend.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
 
+<<<<<<< HEAD
     private String resourceName;
     private String fieldName;
     private Object fieldValue;
@@ -24,5 +25,9 @@ public class ResourceNotFoundException extends RuntimeException {
 
     public Object getFieldValue() {
         return fieldValue;
+=======
+    public ResourceNotFoundException(String message) {
+        super(message);
+>>>>>>> 8c577e4e324fbcf8576365bd773e212da08a34c7
     }
 }
