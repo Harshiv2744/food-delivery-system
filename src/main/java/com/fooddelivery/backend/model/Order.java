@@ -2,14 +2,17 @@ package com.fooddelivery.backend.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
+import java.util.List;
+
+import com.fooddelivery.backend.enums.OrderStatus;
+import com.fooddelivery.backend.enums.PaymentStatus;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 
 @Entity
 @Table(name = "orders")
-@Getter
-@Setter
-@Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order {
@@ -18,32 +21,45 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "restaurant_id")
+    private Restaurant restaurant;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderItem> items;
+
     private Double totalAmount;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+    private OrderStatus orderStatus;
 
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus;
+
+    
     private LocalDateTime createdAt;
-
     private LocalDateTime updatedAt;
-
-    // Relationship with User
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    // Relationship with Restaurant
-    @ManyToOne
-    @JoinColumn(name = "restaurant_id", nullable = false)
-    private Restaurant restaurant;
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
+        createdAt = LocalDateTime.now();
+        updatedAt = createdAt;
+
+        if (paymentStatus == null) {
+            paymentStatus = PaymentStatus.PENDING;
+        }
+
+        if (orderStatus == null) {
+            orderStatus = OrderStatus.PENDING;   // ✅ FIXED HERE
+        }
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 }
